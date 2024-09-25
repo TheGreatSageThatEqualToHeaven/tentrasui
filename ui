@@ -1,0 +1,45 @@
+local scriptContent = [[
+    -- Services
+    local Workspace = game:GetService("Workspace")
+    local RunService = game:GetService("RunService")
+    local TweenService = game:GetService("TweenService")
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local TeleportService = game:GetService("TeleportService")
+
+    -- Load UI Library globally
+    Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/Library.lua"))()
+    ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/ThemeManager.lua"))()
+    SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/SaveManager.lua"))()
+
+    -- Utility functions
+    local day = tonumber(os.date("%d"))
+    local suffix
+    if day == 1 or day == 21 or day == 31 then
+        suffix = "st"
+    elseif day == 2 or day == 22 then
+        suffix = "nd"
+    elseif day == 3 or day == 23 then
+        suffix = "rd"
+    else
+        suffix = "th"
+    end
+
+    -- Set FPS cap
+    setfpscap(2000)
+
+    -- Watermark and basic setup
+    Library:SetWatermark('Tentra Hub | User: ' .. game.Players.LocalPlayer.Name)
+    Library:OnUnload(function()
+        Library.Unloaded = true
+    end)
+
+    ThemeManager:SetLibrary(Library)
+    SaveManager:SetLibrary(Library)
+    SaveManager:IgnoreThemeSettings()
+    SaveManager:SetFolder('TentraHub')
+    ThemeManager:SetFolder('TentraHub')
+]]
+
+-- Execute the loadstring
+loadstring(scriptContent)()
