@@ -1,45 +1,67 @@
-local scriptContent = [[
-    -- Services
-    local Workspace = game:GetService("Workspace")
-    local RunService = game:GetService("RunService")
-    local TweenService = game:GetService("TweenService")
-    local Players = game:GetService("Players")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    local TeleportService = game:GetService("TeleportService")
+-- Initialize Services
+task.wait(0.25)
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local GuiService = game:GetService("GuiService")
+local lighting = game:GetService("Lighting")
+local CoreGui = game:GetService("CoreGui")
+local TeleportService = game:GetService("TeleportService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
 
-    -- Load UI Library globally
-    Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/Library.lua"))()
-    ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/ThemeManager.lua"))()
-    SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/SaveManager.lua"))()
+-- Player
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
-    -- Utility functions
-    local day = tonumber(os.date("%d"))
-    local suffix
-    if day == 1 or day == 21 or day == 31 then
-        suffix = "st"
-    elseif day == 2 or day == 22 then
-        suffix = "nd"
-    elseif day == 3 or day == 23 then
-        suffix = "rd"
-    else
-        suffix = "th"
-    end
+-- Date formatting for suffix
+local day = tonumber(os.date("%d"))
+local suffix
 
-    -- Set FPS cap
-    setfpscap(2000)
+if day == 1 or day == 21 or day == 31 then
+    suffix = "st"
+elseif day == 2 or day == 22 then
+    suffix = "nd"
+elseif day == 3 or day == 23 then
+    suffix = "rd"
+else
+    suffix = "th"
+end
 
-    -- Watermark and basic setup
-    Library:SetWatermark('Tentra Hub | User: ' .. game.Players.LocalPlayer.Name)
-    Library:OnUnload(function()
-        Library.Unloaded = true
-    end)
+-- Set FPS cap
+setfpscap(2000)
 
-    ThemeManager:SetLibrary(Library)
-    SaveManager:SetLibrary(Library)
-    SaveManager:IgnoreThemeSettings()
-    SaveManager:SetFolder('TentraHub')
-    ThemeManager:SetFolder('TentraHub')
-]]
+-- Load UI Library globally
+Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/Library.lua"))()
+ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/ThemeManager.lua"))()
+SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/VaxKs/Linoria1/main/addons/SaveManager.lua"))()
 
--- Execute the loadstring
-loadstring(scriptContent)()
+-- Global configuration to allow window creation later
+Library.OnUnload = function()
+    Library.Unloaded = true
+end
+
+-- Watermark setup
+Library.SetWatermark = function()
+    Library:SetWatermark(('Tentra Hub | User: ' .. game.Players.LocalPlayer.Name .. ' | Version: 1.0 | '..os.date("%A, %B ") .. day .. suffix .. os.date(", %Y")))
+end
+
+-- Setup Theme and Save Manager
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetFolder('TentraHub')
+ThemeManager:SetFolder('TentraHub')
+SaveManager:BuildConfigSection = function(tab)
+    SaveManager:BuildConfigSection(tab)
+end
+ThemeManager:ApplyToTab = function(tab)
+    ThemeManager:ApplyToTab(tab)
+end
+SaveManager.LoadAutoloadConfig = function()
+    SaveManager:LoadAutoloadConfig()
+end
+
+-- Ready to create windows and tabs
